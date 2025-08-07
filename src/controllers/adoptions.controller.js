@@ -1,4 +1,5 @@
 import { adoptionsService, petsService, usersService } from "../services/index.js"
+import { CustomError } from "../utils/CustomError.js";
 
 const getAllAdoptions = async(req,res)=>{
     const result = await adoptionsService.getAll();
@@ -8,17 +9,25 @@ const getAllAdoptions = async(req,res)=>{
 const getAdoption = async(req,res)=>{
     const adoptionId = req.params.aid;
     const adoption = await adoptionsService.getBy({_id:adoptionId})
-    if(!adoption) return res.status(404).send({status:"error",error:"Adoption not found"})
+    if (!adoption) {
+        CustomError.adoptionError('NOT_FOUND')
+    }
     res.send({status:"success",payload:adoption})
 }
 
 const createAdoption = async(req,res)=>{
     const {uid,pid} = req.params;
     const user = await usersService.getUserById(uid);
-    if(!user) return res.status(404).send({status:"error", error:"user Not found"});
+    if (!user) {
+        CustomError.userError('NOT_FOUND')
+    }
     const pet = await petsService.getBy({_id:pid});
-    if(!pet) return res.status(404).send({status:"error",error:"Pet not found"});
-    if(pet.adopted) return res.status(400).send({status:"error",error:"Pet is already adopted"});
+    if (!pet) {
+        CustomError.petError('NOT_FOUND')
+    }
+    if(pet.adopted) {
+        CustomError.petError('ALREADY_ADOPTED')
+    }
     user.pets.push(pet._id);
     await usersService.update(user._id,{pets:user.pets})
     await petsService.update(pet._id,{adopted:true,owner:user._id})
