@@ -1,6 +1,5 @@
 import { adoptionsService, petsService, usersService } from "../services/index.js";
 import { CustomError } from "../utils/CustomError.js";
-import { ERRORS } from "../utils/Errors.js";
 import mongoose from "mongoose";
 
 // Validar formato de ObjectId de MongoDB

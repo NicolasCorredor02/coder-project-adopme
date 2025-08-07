@@ -1,7 +1,7 @@
 import { ERRORS } from './Errors.js';
 
 export class CustomError {
-    // Método que usa el sistema de errores
+    // Metodo estatica para lanzar los errores, este es metodo base
     static throwError(errorType, customMessage = null, customCause = null) {
         const error = new Error(customMessage || errorType.message);
         
