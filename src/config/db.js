@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import { logger } from "../utils/logger.js";
 
 export const connDB = async(urlMongo, dbName) => {
     try {
@@ -10,6 +11,6 @@ export const connDB = async(urlMongo, dbName) => {
         )
         console.log(`DB ${dbName} conectada!`);
     } catch (error) {
-        console.error(`Error al conectar la DB: ${error}`);
+        logger.error(`Error al conectar la DB: ${error}`);
     }
 }

@@ -31,6 +31,7 @@ const getAllPets = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -70,6 +71,7 @@ const createPet = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -128,6 +130,7 @@ const updatePet = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -166,6 +169,7 @@ const deletePet = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -230,6 +234,7 @@ const createPetWithImage = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };

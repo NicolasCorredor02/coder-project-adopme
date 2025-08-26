@@ -18,6 +18,7 @@ const getAllUsers = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -50,6 +51,7 @@ const getUser = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -112,6 +114,7 @@ const updateUser = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -146,6 +149,7 @@ const deleteUser = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };

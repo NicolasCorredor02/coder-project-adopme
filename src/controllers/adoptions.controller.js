@@ -18,6 +18,7 @@ const getAllAdoptions = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -48,6 +49,7 @@ const getAdoption = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -143,6 +145,7 @@ const createAdoption = async (req, res, next) => {
         }
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -172,6 +175,7 @@ const getAdoptionsByUser = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };

@@ -9,6 +9,7 @@ import petsRouter from './routes/pets.router.js';
 import adoptionsRouter from './routes/adoption.router.js';
 import sessionsRouter from './routes/sessions.router.js';
 import mocksRouter from './routes/mocks.router.js';
+import { middLog } from './utils/logger.js';
 
 const app = express();
 const PORT = config.GENERAL.PORT;
@@ -19,6 +20,7 @@ await connDB(config.DATABASE.MONGO_URL, config.DATABASE.DB_NAME);
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
+app.use(middLog) // uso de winston logger en toda la app
 
 // Rutas
 app.use('/api/users', usersRouter);

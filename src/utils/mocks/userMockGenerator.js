@@ -1,5 +1,6 @@
 import { fakerES_MX as faker } from "@faker-js/faker";
 import bcrypt from "bcrypt";
+import { logger } from "../logger.js";
 
 // Configuración de roles disponibles
 const AVAILABLE_ROLES = ['user', 'admin'];
@@ -95,7 +96,7 @@ export const userMockGenerator = async (dataQuantity) => {
         return users;
 
     } catch (error) {
-        console.error('Error generando mocks de usuarios:', error);
+        logger.error(`Error generando mocks de usuarios: ${error.message}`);
         throw new Error(`Error al generar datos de prueba de usuarios: ${error.message}`);
     }
 };

@@ -16,6 +16,7 @@ const createPetsMock = async (req, res, next) => {
             payload: petsGeneratedWithMock
         })
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 }
@@ -29,6 +30,7 @@ const createUsersMock = async (req, res, next) => {
             payload: usersGeneratedWithMock
         })
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error)
     }
 }
@@ -58,9 +60,9 @@ const generateDataWithMock = async (req, res, next) => {
                 }
     
                 const newUser = await usersService.create(user);
-                console.log("new user:", newUser);
                 return newUser;
             } catch (error) {
+                req.logger.error(`Error: ${error.message}`);
                 throw error;
             }
         }));
@@ -85,6 +87,7 @@ const generateDataWithMock = async (req, res, next) => {
             }
         })
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error)
     }
 }

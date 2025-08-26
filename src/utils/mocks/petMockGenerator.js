@@ -1,4 +1,5 @@
 import { fakerES_MX as faker } from "@faker-js/faker";
+import { logger } from "../logger.js";
 
 // Configuración de especies disponibles
 const AVAILABLE_SPECIES = [
@@ -75,7 +76,7 @@ export const petMockGenerator = async (dataQuantity) => {
         return pets;
 
     } catch (error) {
-        console.error('Error generando mocks de mascotas:', error);
+        logger.error('Error generando mocks de mascotas:', error);
         throw new Error(`Error al generar datos de prueba: ${error.message}`);
     }
 };

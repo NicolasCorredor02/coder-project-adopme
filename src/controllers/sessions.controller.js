@@ -58,6 +58,7 @@ const register = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -103,6 +104,7 @@ const login = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -121,6 +123,7 @@ const current = async (req, res, next) => {
         try {
             user = jwt.verify(cookie, config.AUTH.JWT_KEY);
         } catch (jwtError) {
+            req.logger.error(`Error: ${jwtError.message}`);
             if (jwtError.name === 'TokenExpiredError') {
                 CustomError.authError('SESSION_EXPIRED');
             } else {
@@ -135,6 +138,7 @@ const current = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -180,6 +184,7 @@ const unprotectedLogin = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -198,6 +203,7 @@ const unprotectedCurrent = async (req, res, next) => {
         try {
             user = jwt.verify(cookie, config.AUTH.JWT_KEY);
         } catch (jwtError) {
+            req.logger.error(`Error: ${jwtError.message}`);
             if (jwtError.name === 'TokenExpiredError') {
                 CustomError.authError('SESSION_EXPIRED');
             } else {
@@ -212,6 +218,7 @@ const unprotectedCurrent = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };
@@ -228,6 +235,7 @@ const logout = async (req, res, next) => {
         });
         
     } catch (error) {
+        req.logger.error(`Error: ${error.message}`);
         next(error);
     }
 };

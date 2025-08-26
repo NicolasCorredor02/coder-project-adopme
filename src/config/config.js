@@ -6,7 +6,7 @@ const program = new Command();
 program.option("-m, --mode <MODE>", "Ejecution mode (dev / prod)", "dev")
 
 program.parse()
-const { mode } = program.opts()
+export const { mode } = program.opts()
 
 if (mode  != "dev" && mode != "prod") {
     console.log(`Para el argumento -m / --mode solo se aceptan los valores de prod o dev`);
