@@ -1,0 +1,3 @@
+{"level":"error","message":"Error: El email ya está en uso por otro usuario","timestamp":"2025-08-30T01:58:43.852Z"}
+{"level":"error","message":"Error: La contraseña debe tener al menos 8 caracteres","timestamp":"2025-08-30T01:58:56.949Z"}
+{"level":"error","message":"Error: Fecha de nacimiento inválida","timestamp":"2025-08-30T02:27:52.382Z"}

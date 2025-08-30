@@ -20,6 +20,16 @@ const isValidBirthDate = (birthDate) => {
     return date instanceof Date && !isNaN(date) && date <= today;
 };
 
+// Validar formato de URL
+const isValidUrl = (url) => {
+    try {
+        new URL(url);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
 const getAllPets = async (req, res, next) => {
     try {
         const pets = await petsService.getAll();
@@ -38,7 +48,7 @@ const getAllPets = async (req, res, next) => {
 
 const createPet = async (req, res, next) => {
     try {
-        const { name, specie, birthDate } = req.body;
+        const { name, specie, birthDate, image } = req.body;
         
         // Validar campos requeridos
         if (!name || !specie || !birthDate) {
@@ -54,8 +64,13 @@ const createPet = async (req, res, next) => {
         if (!isValidBirthDate(birthDate)) {
             CustomError.petError('INVALID_AGE');
         }
+
+        // Validar formato de imagen (URL)
+        if (image && !isValidUrl(image)) {
+            CustomError.petError('INVALID_IMAGE_URL');
+        }
         
-        const pet = PetDTO.getPetInputFrom({ name, specie: specie.toLowerCase(), birthDate });
+        const pet = PetDTO.getPetInputFrom({ name, specie: specie.toLowerCase(), birthDate, image });
         const result = await petsService.create(pet);
         
         res.status(201).json({
@@ -66,7 +81,8 @@ const createPet = async (req, res, next) => {
                 name: result.name,
                 specie: result.specie,
                 birthDate: result.birthDate,
-                adopted: result.adopted
+                adopted: result.adopted,
+                image: result.image
             }
         });
         

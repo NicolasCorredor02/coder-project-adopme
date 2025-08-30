@@ -117,6 +117,12 @@ export const ERRORS = {
             code: 400,
             cause: "La fecha de nacimiento no puede ser futura"
         },
+        INVALID_IMAGE_URL: {
+            name: "PetValidationError",
+            message: "URL de imagen no válida",
+            code: 400,
+            cause: "La URL de la imagen proporcionada no tiene un formato válido"
+        },
         IMAGE_UPLOAD_FAILED: {
             name: "PetImageError",
             message: "Error al subir la imagen de la mascota",
