@@ -1,4 +1,3 @@
-import PetDTO from "../dto/Pet.dto.js";
 import { petsService } from "../services/index.js";
 import { usersService } from "../services/index.js";
 import { CustomError } from "../utils/CustomError.js";

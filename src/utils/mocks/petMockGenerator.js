@@ -3,8 +3,8 @@ import { logger } from "../logger.js";
 
 // Configuración de especies disponibles
 const AVAILABLE_SPECIES = [
-    'Perro', 'Gato', 'Conejo', 'Hamster', 'Ave', 
-    'Pez', 'Reptil' , 'Otro'
+    'perro', 'gato', 'conejo', 'hamster', 'ave', 
+    'pez', 'reptil' , 'otro'
 ];
 
 // Configuración de URLs de imágenes por especie
