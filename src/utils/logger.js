@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'url';
 import {  dirname } from 'path';
 import winston from "winston";
-import { mode } from '../config/config';
+import { mode } from '../config/config.js';
 
 /**
  * Creacion de las rutas para crear almacenar el logger
