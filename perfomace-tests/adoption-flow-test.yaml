@@ -1,0 +1,49 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm up the API"
+    - duration: 120
+      arrivalRate: 10
+      rampTo: 20
+      name: "Ramp up to peak load"
+scenarios:
+  - name: "Adoption Flow"
+    flow:
+      - log: "Starting adoption flow: Registering user and creating pet..."
+      
+      # 1. Create a User
+      - post:
+          url: "/api/sessions/register"
+          json:
+            first_name: "User_{{$randomString(8)}}"
+            last_name: "Test_{{$randomString(8)}}"
+            email: "user_{{$randomString(10)}}@test.com"
+            password: "ValidPassword123"
+          capture:
+            - json: "$.payload.id"
+              as: "userId"
+
+      # 2. Create a Pet
+      - post:
+          url: "/api/pets"
+          json:
+            name: "Pet-{{ $randomString(8) }}"
+            specie: "perro"
+            birthDate: "2020-01-01"
+          capture:
+            - json: "$.payload.id"
+              as: "petId"
+
+      # 3. Adopt the Pet
+      - log: "User {{ userId }} is adopting pet {{ petId }}"
+      - post:
+          url: "/api/adoptions/{{ userId }}/{{ petId }}"
+
+      # 4. Cleanup
+      - log: "Cleaning up created user and pet"
+      - delete:
+          url: "/api/users/{{ userId }}"
+      - delete:
+          url: "/api/pets/{{ petId }}"

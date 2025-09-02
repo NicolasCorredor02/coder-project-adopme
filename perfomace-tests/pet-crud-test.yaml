@@ -1,0 +1,36 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm up the API"
+    - duration: 120
+      arrivalRate: 10
+      rampTo: 20
+      name: "Ramp up to peak load"
+  payload:
+    - path: "../testing-templates/petsRegister.csv"
+      fields:
+        - "specie"
+        - "image"
+scenarios:
+  - name: "Pets CRUD"
+    flow:
+      - log: "Testing Pets CRUD with random data"
+      - post:
+          url: "/api/pets"
+          json:
+            name: "{{ $randomString(8) }}"
+            specie: "{{ specie }}"
+            birthDate: "2020-01-01"
+            image: "{{ image }}"
+          capture:
+            - json: "$.payload.id"
+              as: "petId"
+      - put:
+          url: "/api/pets/{{ petId }}"
+          json:
+            name: "UPDATED_Pet_{{$randomString(5)}}"
+            adopted: false
+      - delete:
+          url: "/api/pets/{{ petId }}"

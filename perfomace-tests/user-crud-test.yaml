@@ -1,0 +1,72 @@
+# config:
+#   target: "http://localhost:3000"
+#   phases:
+#     - duration: 60
+#       arrivalRate: 5
+#       name: "Warm up the API"
+#     - duration: 120
+#       arrivalRate: 10
+#       rampTo: 20
+#       name: "Ramp up to peak load"
+#   payload:
+#     - path: "../testing-templates/users.csv"
+#       fields:
+#         - "first_name"
+#         - "last_name"
+#         - "email"
+#         - "password"
+# scenarios:
+#   - name: "Users CRUD"
+#     flow:
+#       - log: "Testing Users CRUD"
+#       - post:
+#           url: "/api/sessions/register"
+#           json:
+#             first_name: "{{ first_name }}"
+#             last_name: "{{ last_name }}"
+#             email: "{{ email }}"
+#             password: "{{ password }}"
+#           capture:
+#             - json: "$.payload.id"
+#               as: "userId"
+#       - get:
+#           url: "/api/users/{{ userId }}"
+#       - put:
+#           url: "/api/users/{{ userId }}"
+#           json:
+#             first_name: "UPDATED {{ first_name }}"
+#       - delete:
+#           url: "/api/users/{{ userId }}"
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm up the API"
+    - duration: 120
+      arrivalRate: 10
+      rampTo: 20
+      name: "Ramp up to peak load"
+scenarios:
+  - name: "Users CRUD"
+    flow:
+      - log: "Testing Users CRUD with random data"
+      - post:
+          url: "/api/sessions/register"
+          json:
+            first_name: "User_{{$randomString(8)}}"
+            last_name: "Test_{{$randomString(8)}}"
+            email: "user_{{$randomString(10)}}@test.com"
+            password: "ValidPassword123"
+          capture:
+            - json: "$.payload.id"
+              as: "userId"
+      - get:
+          url: "/api/users/{{ userId }}"
+      - put:
+          url: "/api/users/{{ userId }}"
+          json:
+            first_name: "UPDATED_User_{{$randomString(5)}}"
+      - delete:
+          url: "/api/users/{{ userId }}"
+
