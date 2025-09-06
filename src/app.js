@@ -10,6 +10,8 @@ import adoptionsRouter from './routes/adoption.router.js';
 import sessionsRouter from './routes/sessions.router.js';
 import mocksRouter from './routes/mocks.router.js';
 import { middLog } from './utils/logger.js';
+import swaggerUi from 'swagger-ui-express';
+import { specs } from './config/swagger.js';
 
 const app = express();
 const PORT = config.GENERAL.PORT;
@@ -23,6 +25,7 @@ app.use(cookieParser());
 app.use(middLog) // uso de winston logger en toda la app
 
 // Rutas
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/api/users', usersRouter);
 app.use('/api/pets', petsRouter);
 app.use('/api/adoptions', adoptionsRouter);

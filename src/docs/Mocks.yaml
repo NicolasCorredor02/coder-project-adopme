@@ -1,0 +1,88 @@
+paths:
+  /api/mocks/mockingpets:
+    get:
+      summary: Generates a list of 50 mock pets
+      tags: [Mocks]
+      description: Returns a JSON array of 50 randomly generated pets without saving them to the database.
+      responses:
+        "200":
+          description: A list of 50 mock pets.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    type: array
+                    items:
+                      $ref: './Pets.yaml#/components/schemas/Pet'
+
+  /api/mocks/mockingusers:
+    get:
+      summary: Generates a list of 50 mock users
+      tags: [Mocks]
+      description: Returns a JSON array of 50 randomly generated users without saving them to the database.
+      responses:
+        "200":
+          description: A list of 50 mock users.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    type: array
+                    items:
+                      $ref: './Users.yaml#/components/schemas/User'
+
+  /api/mocks/generateData:
+    post:
+      summary: Generates and saves mock data to the database
+      tags: [Mocks]
+      description: Creates a specified number of users and pets and saves them to the database.
+      parameters:
+        - in: query
+          name: users
+          schema:
+            type: integer
+            default: 20
+          description: The number of mock users to generate and save.
+        - in: query
+          name: pets
+          schema:
+            type: integer
+            default: 20
+          description: The number of mock pets to generate and save.
+      responses:
+        "200":
+          description: The mock data was generated and saved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  payload:
+                    type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          $ref: './Users.yaml#/components/schemas/User'
+                      pets:
+                        type: array
+                        items:
+                          $ref: './Pets.yaml#/components/schemas/Pet'
+        "400":
+          description: Invalid query parameters.

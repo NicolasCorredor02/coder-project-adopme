@@ -1,0 +1,107 @@
+components:
+  schemas:
+    Adoption:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: The auto-generated id of the adoption.
+        owner:
+          type: string
+          description: The ID of the user adopting the pet.
+        pet:
+          type: string
+          description: The ID of the pet being adopted.
+        createdAt:
+          type: string
+          format: date-time
+          description: The date of the adoption.
+      example:
+        _id: "64e1b7c5b4b4a4b4a4b4a4b6"
+        owner: "64e1b7c5b4b4a4b4a4b4a4b4"
+        pet: "64e1b7c5b4b4a4b4a4b4a4b5"
+        createdAt: "2023-08-20T10:00:00.000Z"
+
+paths:
+  /api/adoptions:
+    get:
+      summary: Returns a list of all adoptions
+      tags: [Adoptions]
+      responses:
+        "200":
+          description: A list of adoptions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Adoption'
+
+  /api/adoptions/{uid}/{pid}:
+    post:
+      summary: Create a new adoption
+      tags: [Adoptions]
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: string
+          required: true
+          description: The User ID
+        - in: path
+          name: pid
+          schema:
+            type: string
+          required: true
+          description: The Pet ID
+      responses:
+        "201":
+          description: The adoption was created successfully.
+        "400":
+          description: Bad request (e.g., invalid IDs, pet already adopted).
+        "404":
+          description: User or Pet not found.
+
+  /api/adoptions/{aid}:
+    get:
+      summary: Get an adoption by ID
+      tags: [Adoptions]
+      parameters:
+        - in: path
+          name: aid
+          schema:
+            type: string
+          required: true
+          description: The Adoption ID
+      responses:
+        "200":
+          description: The adoption details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Adoption'
+        "404":
+          description: The adoption was not found.
+
+  /api/adoptions/user/{uid}:
+    get:
+      summary: Get all adoptions for a specific user
+      tags: [Adoptions]
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: string
+          required: true
+          description: The User ID
+      responses:
+        "200":
+          description: A list of the user's adoptions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Adoption'
+        "404":
+          description: The user was not found.

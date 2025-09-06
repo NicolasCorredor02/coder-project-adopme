@@ -1,0 +1,139 @@
+components:
+  schemas:
+    Pet:
+      type: object
+      required:
+        - name
+        - specie
+      properties:
+        _id:
+          type: string
+          description: The auto-generated id of the pet.
+        name:
+          type: string
+          description: The pet's name.
+        specie:
+          type: string
+          description: The pet's species.
+        birthDate:
+          type: string
+          format: date
+          description: The pet's birth date.
+        adopted:
+          type: boolean
+          description: Indicates if the pet has been adopted.
+        owner:
+          type: string
+          description: The ID of the user who owns the pet.
+        image:
+          type: string
+          description: URL or path to the pet's image.
+      example:
+        _id: "64e1b7c5b4b4a4b4a4b4a4b5"
+        name: "Fido"
+        specie: "Dog"
+        birthDate: "2022-01-15T00:00:00.000Z"
+        adopted: false
+        image: "http://example.com/fido.jpg"
+
+paths:
+  /api/pets:
+    get:
+      summary: Returns a list of all pets
+      tags: [Pets]
+      responses:
+        "200":
+          description: A list of pets.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+    post:
+      summary: Create a new pet
+      tags: [Pets]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        "201":
+          description: The pet was created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        "400":
+          description: Bad request, missing required fields or invalid data.
+
+  /api/pets/withimage:
+    post:
+      summary: Create a new pet with an image
+      tags: [Pets]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                specie:
+                  type: string
+                birthDate:
+                  type: string
+                  format: date
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "201":
+          description: The pet was created successfully.
+        "400":
+          description: Bad request or file upload error.
+
+  /api/pets/{pid}:
+    put:
+      summary: Update a pet by ID
+      tags: [Pets]
+      parameters:
+        - in: path
+          name: pid
+          schema:
+            type: string
+          required: true
+          description: The pet ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        "200":
+          description: The pet was updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+        "404":
+          description: The pet was not found.
+    delete:
+      summary: Remove a pet by ID
+      tags: [Pets]
+      parameters:
+        - in: path
+          name: pid
+          schema:
+            type: string
+          required: true
+          description: The pet ID
+      responses:
+        "200":
+          description: The pet was deleted.
+        "404":
+          description: The pet was not found.

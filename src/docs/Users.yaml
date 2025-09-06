@@ -1,0 +1,116 @@
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - first_name
+        - last_name
+        - email
+        - password
+      properties:
+        _id:
+          type: string
+          description: The auto-generated id of the user
+        first_name:
+          type: string
+          description: The user's first name
+        last_name:
+          type: string
+          description: The user's last name
+        email:
+          type: string
+          description: The user's email
+        password:
+          type: string
+          description: The user's password (it will be hashed)
+        role:
+          type: string
+          description: The user's role (e.g., user, admin)
+        pets:
+          type: array
+          items:
+            type: string
+          description: List of pet IDs adopted by the user
+      example:
+        _id: "64e1b7c5b4b4a4b4a4b4a4b4"
+        first_name: "John"
+        last_name: "Doe"
+        email: "john.doe@example.com"
+        role: "user"
+        pets: []
+paths:
+  /api/users:
+    get:
+      summary: Returns a list of all the users
+      tags: [Users]
+      responses:
+        "200":
+          description: The list of the users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /api/users/{uid}:
+    get:
+      summary: Get a user by ID
+      tags: [Users]
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: string
+          required: true
+          description: The user ID
+      responses:
+        "200":
+          description: The user description by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "404":
+          description: The user was not found
+    put:
+      summary: Update a user by ID
+      tags: [Users]
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: string
+          required: true
+          description: The user ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        "200":
+          description: The user was updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "404":
+          description: The user was not found
+        "500":
+          description: Some error happened
+    delete:
+      summary: Remove the user by ID
+      tags: [Users]
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: string
+          required: true
+          description: The user ID
+      responses:
+        "200":
+          description: The user was deleted
+        "404":
+          description: The user was not found
