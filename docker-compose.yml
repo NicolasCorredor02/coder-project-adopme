@@ -1,0 +1,27 @@
+services:
+  # Servicio para el entorno de Desarrollo
+  coder-adoptme-dev:
+    build:
+      context: .
+      target: development
+    image: coder-adoptme:dev
+    container_name: coder-adoptme-dev
+    ports:
+      - "3000:8080"
+    env_file:
+      - ./.env.docker
+    # Se monta el volumen para que los cambios en el código se reflejen sin reiniciar (hot-reload)
+    volumes:
+      - ./src:/app/src
+
+  # Servicio para el entorno de Producción
+  coder-adoptme-prod:
+    build:
+      context: .
+      target: production
+    image: coder-adoptme:prod
+    container_name: coder-adoptme-prod
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./.env.prod

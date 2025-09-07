@@ -20,8 +20,6 @@ components:
         _id: "64e1b7c5b4b4a4b4a4b4a4b6"
         owner: "64e1b7c5b4b4a4b4a4b4a4b4"
         pet: "64e1b7c5b4b4a4b4a4b4a4b5"
-        createdAt: "2023-08-20T10:00:00.000Z"
-
 paths:
   /api/adoptions:
     get:
@@ -33,9 +31,18 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Adoption'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true 
+                  message:
+                    type: string
+                    example: "Adopciones obtenidas exitosamente"
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Adoption'
 
   /api/adoptions/{uid}/{pid}:
     post:
