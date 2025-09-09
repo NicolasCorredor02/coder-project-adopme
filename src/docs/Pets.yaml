@@ -31,10 +31,54 @@ components:
       example:
         _id: "64e1b7c5b4b4a4b4a4b4a4b5"
         name: "Fido"
-        specie: "Dog"
+        specie: "perro"
         birthDate: "2022-01-15T00:00:00.000Z"
         adopted: false
         image: "http://example.com/fido.jpg"
+
+    PetCreateBody:
+      type: object
+      required:
+        - name
+        - specie
+        - birthDate
+      properties:
+        name:
+          type: string
+          description: The pet's name.
+        specie:
+          type: string
+          description: The pet's species.
+        birthDate:
+          type: string
+          format: date
+          description: The pet's birth date.
+        image:
+          type: string
+          description: URL or path to the pet's image.
+      example:
+        name: "Fido"
+        specie: "perro"
+        birthDate: "2022-01-15T00:00:00.000Z"
+        image: "http://example.com/fido.jpg"
+
+    PetUpdateBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The pet's name.
+        specie:
+          type: string
+          description: The pet's species.
+        birthDate:
+          type: string
+          format: date
+          description: The pet's birth date.
+      example:
+        name: "Fido"
+        birthDate: "2022-01-15T00:00:00.000Z"
+
 
 paths:
   /api/pets:
@@ -47,9 +91,18 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Mascotas obtenidas exitosamente"
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Pet'
     post:
       summary: Create a new pet
       tags: [Pets]
@@ -58,16 +111,53 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Pet'
+              $ref: '#/components/schemas/PetCreateBody'
       responses:
         "201":
           description: The pet was created successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Mascota creada exitosamente"
+                  payload:
+                    type: object
+                    $ref: '#/components/schemas/Pet'
         "400":
-          description: Bad request, missing required fields or invalid data.
+          description: Bad request (e.g, missing required fields).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "ValidationError"
+                      message:
+                        type: string
+                        example: "Los campos 'name', 'specie' y 'birthDate' son requeridos"
+                      cause:
+                        type: string
+                        example: "Los campos 'name', 'specie' y 'birthDate' son requeridos"
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/pets/"
 
   /api/pets/withimage:
     post:
@@ -82,19 +172,64 @@ paths:
               properties:
                 name:
                   type: string
+                  description: The pet's name.
                 specie:
                   type: string
+                  description: The pet's species.
                 birthDate:
                   type: string
                   format: date
+                  description: The pet's birth date.
                 image:
                   type: string
                   format: binary
+                  description: The pet's image.  
       responses:
         "201":
           description: The pet was created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Mascota creada exitosamente"
+                  payload:
+                    type: object
+                    $ref: '#/components/schemas/Pet'
         "400":
-          description: Bad request or file upload error.
+          description: Bad request (e.g, missing required fields).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "ValidationError"
+                      message:
+                        type: string
+                        example: "Los campos 'name', 'specie' y 'birthDate' son requeridos"
+                      cause:
+                        type: string
+                        example: "Los campos 'name', 'specie' y 'birthDate' son requeridos"
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/pets/withimage"
 
   /api/pets/{pid}:
     put:
@@ -112,16 +247,53 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Pet'
+              $ref: '#/components/schemas/PetUpdateBody'
       responses:
-        "200":
-          description: The pet was updated.
+        "201":
+          description: The pet was created successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Mascota actualizada exitosamente"
+                  payload:
+                    type: object
+                    $ref: '#/components/schemas/Pet'
         "404":
-          description: The pet was not found.
+          description: Invalid specie or age.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "ValidationError"
+                      message:
+                        type: string
+                        example: "La especie no es válida o la edad no es válida"
+                      cause:
+                        type: string
+                        example: "La especie no es válida o la edad no es válida"
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/pets/bf123123b123b2b2b2b2b"
     delete:
       summary: Remove a pet by ID
       tags: [Pets]
@@ -135,5 +307,49 @@ paths:
       responses:
         "200":
           description: The pet was deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Mascota eliminada exitosamente"
+                  payload:
+                    type: object
+                    properties:
+                      deletedPetId:
+                        type: string
+                        example: "64e1b7c5b4b4a4b4a4b4a4b5"
         "404":
           description: The pet was not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "PetNotFoundError"
+                      message:
+                        type: string
+                        example: "Mascota no encontrada"
+                      cause:
+                        type: string
+                        example: "La mascota con el ID especificado no existe"
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/pets/bf123123b123b2b2b2b2b"

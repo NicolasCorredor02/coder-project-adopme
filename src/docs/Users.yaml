@@ -38,6 +38,22 @@ components:
         email: "john.doe@example.com"
         role: "user"
         pets: []
+    UserUpdateBody:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: The user's first name
+        last_name:
+          type: string
+          description: The user's last name
+        email:
+          type: string
+          description: The user's email
+      example:
+        first_name: "John"
+        last_name: "Doe"
+        email: "john.doe@example.com"
 paths:
   /api/users:
     get:
@@ -49,9 +65,18 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Usuarios obtenidos exitosamente"
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
   /api/users/{uid}:
     get:
       summary: Get a user by ID
@@ -69,9 +94,65 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  success: 
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Usuario encontrado"
+                  payload:
+                    type: object
+                    properties:
+                      id: 
+                        type: string
+                        example: "b4b4b4b4b4b4b4b4b2b34b23b"
+                      first_name: 
+                        type: string
+                        example: "Jhon"
+                      last_name: 
+                        type: string
+                        example: "Doe"
+                      email: 
+                        type: string
+                        example: "john.doe@example.com"
+                      role: 
+                        type: string
+                        example: "user"
+                      pets: 
+                        type: array
+                        example: ["b4b4b4b4b4b4b4b4b2", "b4b4b4b4b4b4b4b4b4"]
         "404":
-          description: The user was not found
+          description: The user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties: 
+                      name:
+                        type: string
+                        example: "UserNotFoundError"
+                      message:
+                        type: string
+                        example: "El usuario no existe" 
+                      cause:
+                        type: string
+                        example: "El usuario no existe"
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/users/bf123123b123b2b2b2b2b"
+
     put:
       summary: Update a user by ID
       tags: [Users]
@@ -87,18 +168,81 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserUpdateBody'
       responses:
         "200":
           description: The user was updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  success:
+                    type: string
+                    example: true
+                  message:
+                    type: string
+                    example: "Usuario actualizado exitosamente"
+                  payload:  
+                    $ref: '#/components/schemas/User'
         "404":
-          description: The user was not found
+          description: The user no have a valid email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties: 
+                      name:
+                        type: string
+                        example: "User invalid email"
+                      message:
+                        type: string
+                        example: "El email no es válido ya existe o el dominio no es admitido" 
+                      cause:
+                        type: string
+                        example: "El email no es válido ya existe o el dominio no es admitido"
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/users/bf123123b123b2b2b2b2b"
         "500":
           description: Some error happened
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties: 
+                      name:
+                        type: string
+                        example: "Updated failed"
+                      message:
+                        type: string
+                        example: "Ha ocurrido un error inesperado en la actualizacion del usuario" 
+                      cause:
+                        type: string
+                        example: ""
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/users/bf123123b123b2b2b2b2b"
     delete:
       summary: Remove the user by ID
       tags: [Users]
@@ -112,5 +256,49 @@ paths:
       responses:
         "200":
           description: The user was deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Usuario eliminado exitosamente"
+                  payload:
+                    type:  object
+                    properties:
+                      deletedUserId:
+                        type: string
+                        example: "64e1b7c5b4b4a4b4a4b4a4b4"
         "404":
           description: The user was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties: 
+                      name:
+                        type: string
+                        example: "UserNotFoundError"
+                      message:
+                        type: string
+                        example: "Usuario no encontrado" 
+                      cause:
+                        type: string
+                        example: "El usuario con el ID especificado no existe"
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/users/bf123123b123b2b2b2b2b"

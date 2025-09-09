@@ -1,3 +1,47 @@
+components:
+  schemas:
+    Pets:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Fido"
+        specie:
+          type: string
+          example: "Perro"
+        birthDate:
+          type: string
+          format: date
+          example: "2020-01-01"
+        adopted:
+          type: boolean
+          example: false
+        image:
+          type: string
+          example: "http://example.com/fido.jpg"
+    Users:
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: "John"
+        last_name:
+          type: string
+          example: "Doe"
+        email:
+          type: string
+          example: "john.doe@example.com"
+        password:
+          type: string
+          example: "password123"
+        role:
+          type: string
+          example: "user"
+        pets:
+          type: array
+          items:
+            type: string
+          example: []
 paths:
   /api/mocks/mockingpets:
     get:
@@ -14,13 +58,14 @@ paths:
                 properties:
                   success:
                     type: boolean
+                    example: true
                   message:
                     type: string
+                    example: "Se han generado 50 mascotas exitosamente haciendo uso del mock"
                   payload:
                     type: array
                     items:
-                      $ref: './Pets.yaml#/components/schemas/Pet'
-
+                      $ref: '#/components/schemas/Pets'
   /api/mocks/mockingusers:
     get:
       summary: Generates a list of 50 mock users
@@ -36,12 +81,14 @@ paths:
                 properties:
                   success:
                     type: boolean
+                    example: true
                   message:
                     type: string
+                    example: "Se han generado 50 usuarios exitosamente haciendo uso del mock"
                   payload:
                     type: array
                     items:
-                      $ref: './Users.yaml#/components/schemas/User'
+                      $ref: '#/components/schemas/Users'
 
   /api/mocks/generateData:
     post:
@@ -71,18 +118,47 @@ paths:
                 properties:
                   success:
                     type: boolean
+                    example: true
                   message:
                     type: string
+                    example: "Se han generado 20 usuarios y 20 mascotas exitosamente"
                   payload:
                     type: object
                     properties:
                       users:
                         type: array
                         items:
-                          $ref: './Users.yaml#/components/schemas/User'
+                          $ref: '#/components/schemas/Users'
                       pets:
                         type: array
                         items:
-                          $ref: './Pets.yaml#/components/schemas/Pet'
-        "400":
-          description: Invalid query parameters.
+                          $ref: '#/components/schemas/Pets'
+        "404":
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "ValidationError"
+                      message:
+                        type: string
+                        example: "Las cantidades de usuarios y/o mascotas nos pueden menor o igual a 0!"
+                      cause:
+                        type: string
+                        example: "Las cantidades de usuarios y/o mascotas nos pueden menor o igual a 0!"
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/mocks/generateData?users=0&pets=-1"

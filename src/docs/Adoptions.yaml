@@ -20,6 +20,7 @@ components:
         _id: "64e1b7c5b4b4a4b4a4b4a4b6"
         owner: "64e1b7c5b4b4a4b4a4b4a4b4"
         pet: "64e1b7c5b4b4a4b4a4b4a4b5"
+        createdAt: "2025-01-01T00:00:00.000Z"
 paths:
   /api/adoptions:
     get:
@@ -64,11 +65,80 @@ paths:
       responses:
         "201":
           description: The adoption was created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Adopción realizada exitosamente"
+                  payload:
+                    type: object
+                    properties:
+                      adoptionDetails:
+                        type: object
+                        properties:
+                          owner:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                example: "64e1b7c5b4b4a4b4a4b4a4b4"
+                              name:
+                                type: string
+                                example: "John Doe"
+                              email:
+                                type: string
+                                example: "john.doe@example.com"
+                          pet:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                example: "64e1b7c5b4b4a4b4a4b4a4b5"
+                              name:
+                                type: string
+                                example: "Fido"
+                              specie:
+                                type: string
+                                example: "Dog"
+                          adoptedAt:
+                            type: string
+                            format: date-time
+                            example: "2025-01-01T00:00:00.000Z"
         "400":
           description: Bad request (e.g., invalid IDs, pet already adopted).
-        "404":
-          description: User or Pet not found.
-
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "AdoptionValidationError"
+                      message:
+                        type: string
+                        example: "La mascota no está disponible para adopción"
+                      cause:
+                        type: string
+                        example: "La mascota ya ha sido adoptada por otro usuario"
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/adoptions/6894ebe1fb71e0f913875f9b/68b2645d967906fb232ac563"
   /api/adoptions/{aid}:
     get:
       summary: Get an adoption by ID
@@ -86,7 +156,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Adoption'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Adopción encontrada"
+                  payload:
+                    $ref: '#/components/schemas/Adoption'
         "404":
           description: The adoption was not found.
 
@@ -107,8 +186,45 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Adoption'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Adopciones del usuario obtenidas exitosamente"
+                  payload:
+                    type: array
+                    items: 
+                      $ref: '#/components/schemas/Adoption'
         "404":
           description: The user was not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "AdoptionValidationError"
+                      message:
+                        type: string
+                        example: "El usuario no existe"
+                      cause:
+                        type: string
+                        example: "El usuario no existe"
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/adoptions/user/6894ebe1fb71e0f913875f9b/"
+

@@ -1,0 +1,375 @@
+components:
+  schemas:
+    UserRegister:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: "Nombre del usuario."
+        last_name:
+          type: string
+          description: "Apellido del usuario."
+        email:
+          type: string
+          description: "Email del usuario (debe ser único)."
+        password:
+          type: string
+          description: "Contraseña del usuario (mínimo 8 caracteres)."
+      required:
+        - first_name
+        - last_name
+        - email
+        - password
+      example:
+        first_name: "John"
+        last_name: "Doe"
+        email: "john.doe@example.com"
+        password: "password123"
+
+    UserLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          description: "Email del usuario registrado."
+        password:
+          type: string
+          description: "Contraseña del usuario."
+      required:
+        - email
+        - password
+      example:
+        email: "john.doe@example.com"
+        password: "password123"
+
+    UserLoginResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          description: "Nombre completo del usuario"
+        email:
+          type: string
+          description: "Email del usuario registrado."
+        role:
+          type: string
+          description: "Rol del usuario."
+      example:
+        name: "John Doe"
+        email: "john.doe@example.com"
+        role: "user"
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: "ID del usuario."
+        name:
+          type: string
+          description: "Nombre completo del usuario."
+        email:
+          type: string
+          description: "Email del usuario."
+        role:
+          type: string
+          description: "Rol del usuario."
+      example:
+        id: "64e1b7c5b4b4a4b4a4b4a4b4"
+        name: "John Doe"
+        email: "john.doe@example.com"
+        role: "user"
+
+    UserCurrent:
+      type: object
+      properties:
+        name:
+          type: string
+          description: "Nombre completo del usuario."
+        role:
+          type: string
+          description: "Rol del usuario."
+        email:
+          type: string
+          description: "Email del usuario."
+        iat:
+          type: integer
+          description: "Timestamp de creación del token."
+        exp:
+          type: integer
+          description: "Timestamp de expiración del token."
+      example:
+        name: "John Doe"
+        role: "user"
+        email: "john.doe@example.com"
+        iat: "1243121234"
+        exp: "989079867"
+
+paths:
+  /api/sessions/register:
+    post:
+      summary: "Registra un nuevo usuario"
+      tags: [Sessions]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+      responses:
+        "201":
+          description: "Usuario registrado exitosamente."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Usuario registrado exitosamente"
+                  payload:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      email:
+                        type: string
+                      name:
+                        type: string
+        "400":
+          description: "Error de validación (campos faltantes, email inválido, contraseña débil)."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "ValidationError"
+                      message:
+                        type: string
+                        example: "Los campos first_name, last_name, email y password son obligatorios"
+                      cause:
+                        type: string
+                        example: "Los campos first_name, last_name, email y password son obligatorios"
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/sessions/register"
+        "409":
+          description: "El usuario ya existe."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "UserError"
+                      message:
+                        type: string
+                        example: "El usuario ya existe"
+                      cause:
+                        type: string
+                        example: "El usuario ya existe"
+                      timestamp:
+                        type: string 
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/sessions/register"
+  /api/sessions/login:
+    post:
+      summary: "Inicia sesión para un usuario"
+      tags: [Sessions]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        "200":
+          description: "Inicio de sesión exitoso. Se establece una cookie 'coderCookie'."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Inicio de sesión exitoso"
+                  user:
+                    $ref: '#/components/schemas/UserLoginResponse'
+        "401":
+          description: "Credenciales inválidas."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: 
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "AuthenticationError"
+                      message:
+                        type: string
+                        example: "Email o contraseña incorrectos"
+                      cause:
+                        type: string
+                        example: "Las credenciales proporcionadas no son válidas"
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/sessions/login"
+
+  /api/sessions/current:
+    get:
+      summary: "Obtiene los datos del usuario actualmente autenticado"
+      tags: [Sessions]
+      responses:
+        "200":
+          description: "Usuario autenticado."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Usuario autenticado"
+                  payload:
+                    $ref: '#/components/schemas/UserCurrent'
+        "401":
+          description: "No autorizado (token faltante, inválido o expirado)."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: "AuthenticationError"
+                      message:
+                        type: string
+                        example: "Credenciales inválidas o sesión expirada"
+                      cause:
+                        type: string
+                        example: "Credenciales inválidas o sesión expirada"
+                      timestamp:
+                        type: string
+                        format: date-time
+                        example: "2025-01-01T00:00:00.000Z"
+                      path:
+                        type: string
+                        example: "/api/sessions/current"
+
+  /api/sessions/logout:
+    post:
+      summary: "Cierra la sesión del usuario"
+      tags: [Sessions]
+      responses:
+        "200":
+          description: "Sesión cerrada exitosamente. Las cookies de sesión son eliminadas."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Sesión cerrada exitosamente"
+
+  /api/sessions/unprotected-login:
+    post:
+      summary: "Inicia sesión (no protegida) para un usuario"
+      tags: [Sessions]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        "200":
+          description: "Inicio de sesión no protegido exitoso. Se establece una cookie 'unprotectedCookie'."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Inicio de sesión no protegido exitoso"
+        "400":
+          description: "Campos 'email' y 'password' son obligatorios."
+        "401":
+          description: "Credenciales inválidas."
+
+  /api/sessions/unprotected-current:
+    get:
+      summary: "Obtiene los datos del usuario autenticado (no protegido)"
+      tags: [Sessions]
+      responses:
+        "200":
+          description: "Usuario autenticado (no protegido)."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Usuario autenticado (no protegido)"
+                  payload:
+                    type: object
+        "401":
+          description: "No autorizado (token faltante, inválido o expirado)."
