@@ -84,9 +84,7 @@ describe("Prueba router pets", function () {
             const updateMock = {
                 name: "Test Pet Updated"
             };
-            const response = await requester.put(`/api/pets/${petId}`).send(updateMock);
-            console.log("Response body:", response.body);
-            
+            const response = await requester.put(`/api/pets/${petId}`).send(updateMock);            
             expect(response.statusCode).to.equal(200);
             expect(response.body.payload.name).to.equal("Test Pet Updated");
         });

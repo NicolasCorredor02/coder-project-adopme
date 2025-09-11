@@ -83,9 +83,9 @@ npm run prod
 
 Por medio del siguiente enlace podras descargar las imagenes de docker tanto la imagen del entorno de produccion como la imagen de desarrollo:
 
-Desarrollo: [**http://localhost:3000/api-docs**](http://localhost:3000/api-docs)
+Imagen de desarrollo: [**click aqui**]()
 
-Producción: [**http://localhost:8080/api-docs**](http://localhost:8080/api-docs)
+Imagen de producción: [**click aqui**]()
 
 ---
 
@@ -100,18 +100,22 @@ Este método es el recomendado ya que abstrae la configuración del entorno y la
 
 ### 2. Configurar Archivos de Entorno
 
-El proyecto utiliza archivos de entorno separados para desarrollo y producción con Docker.
-
 **A. Para Desarrollo (`.env.docker`)**
 
-Crea un archivo `.env.docker` en la raíz. Usa `host.docker.internal` para conectar a una base de datos MongoDB que se ejecuta en tu máquina local.
+El proyecto utiliza archivos de entorno separados para desarrollo y producción con Docker.
 
-```env
-PORT=8080
-MONGO_URL=mongodb://host.docker.internal:27017
-DB_NAME=coder-project-adopme
-JWT_SECRET_KEY=tu_clave_secreta_super_segura
-```
+> **Nota Importante:** Para la ejecución con Docker, es crucial crear un archivo `.env.docker` en la raíz del proyecto. Este archivo debe contener las variables de entorno necesarias para que la aplicación se conecte a servicios externos desde el contenedor, como la base de datos.
+>
+> Un punto clave es la variable `MONGO_URL`. Cuando se ejecuta la aplicación en Docker y la base de datos MongoDB está en la misma máquina (el host), no se puede usar `localhost`. En su lugar, se debe utilizar `host.docker.internal` para permitir que el contenedor Docker se comunique con la base de datos del host.
+>
+> A continuación se muestra el contenido que debe tener el archivo `.env.docker`:
+>
+> ```env
+> PORT=3000
+> MONGO_URL=mongodb://host.docker.internal:27017
+> DB_NAME=coder-project-adopme
+> JWT_SECRET_KEY=coder-secret
+> ```
 
 **B. Para Producción (`.env.prod`)**
 
@@ -199,6 +203,22 @@ Producción: [**http://localhost:8080/api-docs**](http://localhost:8080/api-docs
 - `npm start`: Inicia el servidor en modo por defecto.
 - `npm run dev`: Inicia el servidor en modo desarrollo con `nodemon` para recarga automática.
 - `npm test`: Ejecuta las pruebas de la API con Mocha y Supertest.
+
+---
+
+## Test de Integración
+
+El proyecto incluye pruebas de integración para los endpoints de `users` y `pets`. Estas pruebas verifican que los endpoints CRUD (Crear, Leer, Actualizar, Eliminar) funcionen como se espera.
+
+### Ejecutar las Pruebas
+
+Para ejecutar las pruebas, asegúrate de estar en el directorio raíz del proyecto y ejecuta el siguiente comando:
+
+```bash
+npx mocha
+```
+
+Este comando utilizará Mocha para encontrar y ejecutar los archivos de prueba ubicados en el directorio `test/`.
 
 ---
 
